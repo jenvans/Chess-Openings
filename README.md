@@ -142,6 +142,7 @@ A comprehensive web-based chess opening trainer with spaced repetition, practice
 - localStorage is device-specific (no automatic cloud sync)
 - PGN parser handles most formats but may skip malformed games
 - Some very old browsers may not support all features
+- No "default" openings (yet)
 
 ## 🤝 Contributing
 
@@ -165,3 +166,4 @@ For issues or questions, please open an issue on the GitHub repository.
 ---
 
 **Happy training! May your openings be sharp and your memory strong! ♟️**
+
