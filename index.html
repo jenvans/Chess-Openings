@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Master chess openings with spaced repetition. Interactive chess opening trainer with practice modes, progress tracking, and PGN import.">
+    <meta name="keywords" content="chess, openings, trainer, spaced repetition, chess practice, PGN">
+    <meta name="author" content="Chess Opening Trainer">
+    <title>Chess Opening Trainer - Learn & Master Chess Openings</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="knight.svg">
+    
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Chess Opening Trainer</h1>
+        
+        <!-- Navigation Menu -->
+        <nav class="nav-menu">
+            <button class="nav-btn active" data-view="spacedRepetition">📚 Spaced Repetition</button>
+            <button class="nav-btn" data-view="practice">🎯 Practice</button>
+            <button class="nav-btn" data-view="learn">🎓 Learn</button>
+            <button class="nav-btn" data-view="manage">⚙️ Manage Openings</button>
+        </nav>
+        
+        <!-- Spaced Repetition View - Main Page -->
+        <div id="spacedRepetitionView" class="view active">
+            <div class="main-content">
+                <div class="left-column">
+                    <div class="board-container">
+                        <div id="spacedRepetitionBoardWrapper" class="theme-blue">
+                            <div id="spacedRepetitionBoard"></div>
+                        </div>
+                        
+                        <div class="board-controls">
+                            <button id="spacedRepetitionFlipBtn" class="btn btn-secondary">Flip Board</button>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <h2>Progress</h2>
+                        <div id="spacedRepetitionProgress"></div>
+                    </div>
+                </div>
+                
+                <div class="controls-container">
+                    <div class="control-group">
+                        <h2 id="spacedRepetitionOpeningName">Ready to Practice</h2>
+                        
+                        <div class="input-group">
+                            <label>
+                                <input type="checkbox" id="clickToMoveSpacedRepetition" class="click-to-move-toggle">
+                                Click-to-move
+                            </label>
+                        </div>
+                        <div id="spacedRepetitionInfo"></div>
+                        <div id="spacedRepetitionProgress" class="progress-indicator"></div>
+                        <div id="spacedRepetitionMoveList"></div>
+                        <div class="button-group">
+                            <button id="startSpacedRepetitionBtn" class="btn btn-primary" aria-label="Start spaced repetition practice">Start Practice</button>
+                            <button id="hintSpacedRepetitionBtn" class="btn btn-secondary" style="display:none;" aria-label="Show hint for current move">Hint</button>
+                            <button id="nextSpacedRepetitionBtn" class="btn btn-primary" style="display:none;" aria-label="Load next opening">Next Opening</button>
+                            <button id="resetProgressBtn" class="btn btn-secondary reset-progress-btn" aria-label="Reset all review progress">Reset Progress</button>
+                        </div>
+                        <div id="spacedRepetitionStatus" class="status-message"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Practice View (Filtered Random) -->
+        <div id="practiceView" class="view">
+            <div class="main-content">
+                <div class="left-column">
+                    <div class="board-container">
+                        <div id="practiceBoardWrapper" class="theme-blue">
+                            <div id="practiceBoard"></div>
+                        </div>
+                        
+                        <div class="board-controls">
+                            <button id="practiceFlipBtn" class="btn btn-secondary">Flip Board</button>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <div class="controls-container">
+                    <div class="control-group">
+                        <h2>Quick Practice</h2>
+                        
+                        <div class="button-group">
+                            <button id="practiceWhiteBtn" class="btn btn-primary">Practice White Openings</button>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button id="practiceBlackBtn" class="btn btn-primary">Practice Black Openings</button>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Practice</label>
+                            <div class="filter-row">
+                                <select id="practiceCategoryFilter">
+                                    <option value="">Select Category...</option>
+                                </select>
+                                <button id="practiceByCategory" class="btn btn-secondary">Go</button>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Practice</label>
+                            <div class="filter-row">
+                                <select id="practiceFirstMoveFilter">
+                                    <option value="">Select First Move...</option>
+                                </select>
+                                <button id="practiceByFirstMove" class="btn btn-secondary">Go</button>
+                            </div>
+                        </div>
+                        
+                        <div id="practiceSessionInfo" style="display:none;">
+                            <h2 id="practiceOpeningName"></h2>
+                            <div class="input-group">
+                                <label>
+                                    <input type="checkbox" id="clickToMovePractice" class="click-to-move-toggle" checked>
+                                    Click-to-move
+                                </label>
+                            </div>
+                            <div id="practiceInfo"></div>
+                            <div id="practiceProgress" class="progress-indicator"></div>
+                            <div id="practiceMoveList"></div>
+                            <div class="button-group">
+                                <button id="hintPracticeBtn" class="btn btn-secondary" style="display:none;">Hint</button>
+                                <button id="nextPracticeBtn" class="btn btn-primary" style="display:none;">Next Opening</button>
+                            </div>
+                        </div>
+                        
+                        <div id="practiceStatus" class="status-message"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Learn View -->
+        <div id="learnView" class="view">
+            <div class="main-content">
+                <div class="left-column">
+                    <div class="board-container">
+                        <div id="learnBoardWrapper" class="theme-blue">
+                            <div id="learnBoard"></div>
+                        </div>
+                        
+                        <div class="board-controls">
+                            <button id="learnFlipBtn" class="btn btn-secondary">Flip Board</button>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <h2>Selected Opening</h2>
+                        <div id="learnProgress"></div>
+                    </div>
+                </div>
+                
+                <div class="controls-container">
+                    <div class="control-group">
+                        <h2>Select Opening to Learn</h2>
+                        
+                        <div class="input-group">
+                            <label>
+                                <input type="checkbox" id="clickToMoveLearn" class="click-to-move-toggle">
+                                Click-to-move
+                            </label>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Filter by Category:</label>
+                            <select id="learnCategoryFilter">
+                                <option value="all">All Categories</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Filter by Color:</label>
+                            <select id="learnColorFilter">
+                                <option value="all">All Colors</option>
+                                <option value="white">White</option>
+                                <option value="black">Black</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label>Filter by First Move:</label>
+                            <select id="learnFirstMoveFilter">
+                                <option value="all">All First Moves</option>
+                            </select>
+                        </div>
+                        
+                        <div id="learnOpeningsList"></div>
+                        
+                        <div class="button-group">
+                            <button id="startLearnBtn" class="btn btn-primary" disabled>Start Learning</button>
+                            <button id="showLearnAnswerBtn" class="btn btn-secondary" style="display:none;">Show Full Sequence</button>
+                            <button id="resetLearnBtn" class="btn btn-secondary" style="display:none;">Reset</button>
+                        </div>
+                        <div id="learnStatus" class="status-message"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Manage Openings View (Current Page) -->
+        <div id="manageView" class="view">
+            <div class="main-content">
+                <!-- Chess Board -->
+                <div class="left-column">
+                    <div class="board-container">
+                    <div id="boardWrapper" class="theme-blue">
+                        <div id="board"></div>
+                    </div>
+                    
+                    <div class="board-controls">
+                        <button id="flipBoardBtn" class="btn btn-secondary">Flip Board</button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h2>Saved Openings</h2>
+                    <div class="input-group">
+                        <input type="text" id="openingSearch" placeholder="🔍 Search by name or category..." aria-label="Search openings by name or category">
+                    </div>
+                    <div id="savedOpenings"></div>
+                </div>
+            </div>
+            
+            <!-- Controls -->
+            <div class="controls-container">
+                <div class="control-group">
+                    <h2>Record Opening</h2>
+                    
+                    <div class="input-group">
+                        <label for="variationName">Variation Name:</label>
+                        <input type="text" id="variationName" placeholder="e.g., Sicilian Dragon" />
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="categoryName">Category:</label>
+                        <input type="text" id="categoryName" list="categoryList" placeholder="e.g., Sicilian Defense, King's Pawn" />
+                        <datalist id="categoryList"></datalist>
+                        <small class="input-hint">Group similar openings together for organized practice</small>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Playing As:</label>
+                        <div class="color-selector">
+                            <label class="radio-label">
+                                <input type="radio" name="playingColor" value="white" checked>
+                                <span>⚪ White</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="playingColor" value="black">
+                                <span>⚫ Black</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="move-list-container">
+                        <h3>Moves:</h3>
+                        <div id="moveList"></div>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button id="saveBtn" class="btn btn-primary">Save Opening</button>
+                        <button id="undoBtn" class="btn btn-secondary">Undo Move</button>
+                        <button id="resetBtn" class="btn btn-secondary">Reset Board</button>
+                    </div>
+                    
+                    <div id="statusMessage" class="status-message"></div>
+                </div>
+                
+                <div class="control-group">
+                    <h2>Upload PGN</h2>
+                    
+                    <div class="input-group">
+                        <label for="pgnFile">Upload PGN File:</label>
+                        <input type="file" id="pgnFile" accept=".pgn" />
+                        <small class="input-hint">Upload a PGN file to import openings with variation names and moves</small>
+                    </div>
+                    
+                    <div id="pgnStatus" class="status-message"></div>
+                </div>
+                
+                <div class="control-group">
+                    <h2>Settings</h2>
+                    
+                    <div class="input-group">
+                        <label>Board Theme:</label>
+                        <div class="theme-buttons">
+                            <button class="theme-btn" data-theme="blue" title="Classic Blue">🔵</button>
+                            <button class="theme-btn" data-theme="green" title="Forest Green">🟢</button>
+                            <button class="theme-btn" data-theme="brown" title="Wooden Brown">🟤</button>
+                            <button class="theme-btn" data-theme="purple" title="Royal Purple">🟣</button>
+                            <button class="theme-btn" data-theme="gray" title="Modern Gray">⚫</button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" id="clickToMove" checked>
+                            Click-to-move (instead of drag)
+                        </label>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" id="darkModeToggle">
+                            🌙 Dark Mode
+                        </label>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="pgnImport">Import PGN:</label>
+                        <input type="file" id="pgnImport" accept=".pgn" aria-label="Select PGN file to import">
+                        <div id="pgnStatus" class="status-message" style="display:none;"></div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Backup & Restore:</label>
+                        <div class="button-group">
+                            <button id="exportDataBtn" class="btn btn-secondary" aria-label="Export all openings as JSON backup">Export All Data</button>
+                            <button id="importDataBtn" class="btn btn-secondary" aria-label="Import openings from JSON backup">Import Data</button>
+                            <input type="file" id="importDataFile" accept=".json" style="display:none;" aria-label="Select JSON backup file to import">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <button id="resetAllProgress" class="btn btn-danger">Reset All Progress</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Opening Modal -->
+    <div id="editModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2>Edit Opening Info</h2>
+            
+            <div class="input-group">
+                <label for="editVariationName">Variation Name:</label>
+                <input type="text" id="editVariationName" />
+            </div>
+            
+            <div class="input-group">
+                <label for="editCategory">Category:</label>
+                <input type="text" id="editCategory" />
+            </div>
+            
+            <div class="input-group">
+                <label>Playing As:</label>
+                <div class="color-selector">
+                    <label class="radio-label">
+                        <input type="radio" name="editPlayingColor" value="white" id="editColorWhite">
+                        <span>⚪ White</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="editPlayingColor" value="black" id="editColorBlack">
+                        <span>⚫ Black</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button id="saveEditBtn" class="btn btn-primary">Save Changes</button>
+                <button id="cancelEditBtn" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
