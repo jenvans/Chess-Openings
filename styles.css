@@ -855,10 +855,31 @@ input[type="checkbox"] {
 }
 
 @media (max-width: 768px) {
-    #board {
+    h1 {
+        font-size: 1.8em;
+    }
+    
+    #board,
+    #spacedRepetitionBoard,
+    #practiceBoard,
+    #learnBoard {
         width: 100%;
         max-width: 400px;
         height: auto;
+    }
+    
+    .board-container {
+        width: 100%;
+        max-width: 100%;
+        padding: 15px;
+    }
+    
+    .left-column {
+        width: 100%;
+    }
+    
+    .left-column .control-group {
+        width: 100%;
     }
     
     .main-content {
@@ -961,7 +982,7 @@ input[type="checkbox"] {
     }
     
     h1 {
-        font-size: 20px;
+        font-size: 1.4em;
     }
     
     h2 {
@@ -973,8 +994,17 @@ input[type="checkbox"] {
         padding: 8px 6px;
     }
     
-    .board-wrapper {
+    .board-wrapper,
+    #boardWrapper,
+    #spacedRepetitionBoardWrapper,
+    #practiceBoardWrapper,
+    #learnBoardWrapper {
         max-width: 100%;
+        width: 100%;
+    }
+    
+    .board-container {
+        padding: 10px;
     }
 }
 
