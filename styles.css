@@ -321,7 +321,9 @@ body.dark-mode .nav-btn.active {
 }
 
 .left-column .control-group {
-    width: 540px;
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
 }
 
 .board-container {
@@ -329,48 +331,72 @@ body.dark-mode .nav-btn.active {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    width: fit-content;
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
 }
 
 .board-controls {
     margin-top: 15px;
     display: flex;
     justify-content: center;
+    gap: 10px;
 }
 
 .board-controls .btn {
-    width: 100%;
+    flex: 1;
     max-width: 200px;
+}
+
+/* Click vs Tap text */
+.tap-text {
+    display: none;
+}
+
+.click-text {
+    display: inline;
 }
 
 #board {
     width: 500px;
     height: 500px;
+    max-width: 100%;
 }
 
 #spacedRepetitionBoard {
     width: 500px;
     height: 500px;
+    max-width: 100%;
 }
 
 #practiceBoard {
     width: 500px;
     height: 500px;
+    max-width: 100%;
 }
 
 #learnBoard {
     width: 500px;
     height: 500px;
+    max-width: 100%;
 }
 
-#boardWrapper {
-    width: fit-content;
+#boardWrapper,
+#spacedRepetitionBoardWrapper,
+#practiceBoardWrapper,
+#learnBoardWrapper {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    display: block;
 }
 
 .controls-container {
     flex: 1;
     min-width: 350px;
-    max-width: 500px;
+    max-width: 540px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .control-group {
@@ -489,6 +515,7 @@ input[type="text"]:focus {
     text-align: center;
     font-weight: 600;
     margin-top: 15px;
+    margin-bottom: 15px;
     display: none;
 }
 
@@ -859,19 +886,45 @@ input[type="checkbox"] {
         font-size: 1.8em;
     }
     
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 0;
+    }
+    
     #board,
     #spacedRepetitionBoard,
     #practiceBoard,
     #learnBoard {
-        width: 100%;
-        max-width: 400px;
-        height: auto;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+    }
+    
+    #boardWrapper,
+    #spacedRepetitionBoardWrapper,
+    #practiceBoardWrapper,
+    #learnBoardWrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden;
+    }
+    
+    /* Force all board elements to be contained */
+    #board, #board *,
+    #spacedRepetitionBoard, #spacedRepetitionBoard *,
+    #practiceBoard, #practiceBoard *,
+    #learnBoard, #learnBoard * {
+        max-width: 100% !important;
     }
     
     .board-container {
-        width: 100%;
-        max-width: 100%;
-        padding: 15px;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 10px;
+        overflow: hidden;
     }
     
     .left-column {
@@ -882,8 +935,34 @@ input[type="checkbox"] {
         width: 100%;
     }
     
+    /* Show tap text instead of click text on mobile */
+    .tap-text {
+        display: inline;
+    }
+    
+    .click-text {
+        display: none;
+    }
+    
     .main-content {
         flex-direction: column;
+    }
+    
+    /* Reorder spaced repetition layout on mobile */
+    #spacedRepetitionView .left-column {
+        display: contents; /* Make children direct flex items of main-content */
+    }
+    
+    #spacedRepetitionView .board-container {
+        order: 1;
+    }
+    
+    #spacedRepetitionView .controls-container {
+        order: 2;
+    }
+    
+    #spacedRepetitionView .left-column .control-group {
+        order: 3;
     }
     
     .controls-container {
@@ -894,13 +973,15 @@ input[type="checkbox"] {
     .nav-menu {
         flex-wrap: wrap;
         gap: 5px;
+        margin-bottom: 15px;
     }
     
     .nav-btn {
-        flex: 1 1 calc(50% - 5px);
-        min-width: 120px;
-        font-size: 12px;
-        padding: 10px 8px;
+        flex: 1 1 calc(25% - 5px);
+        min-width: 60px;
+        font-size: 10px;
+        padding: 6px 4px;
+        min-height: 32px;
     }
     
     /* Larger touch targets */
@@ -977,8 +1058,12 @@ input[type="checkbox"] {
 
 /* Extra small devices (phones, less than 400px) */
 @media (max-width: 400px) {
-    .container {
+    body {
         padding: 10px;
+    }
+    
+    .container {
+        padding: 0;
     }
     
     h1 {
@@ -990,8 +1075,19 @@ input[type="checkbox"] {
     }
     
     .nav-btn {
-        font-size: 11px;
-        padding: 8px 6px;
+        font-size: 10px;
+        padding: 6px 4px;
+        min-height: 32px;
+        min-width: 80px;
+    }
+    
+    #board,
+    #spacedRepetitionBoard,
+    #practiceBoard,
+    #learnBoard {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
     }
     
     .board-wrapper,
@@ -999,12 +1095,14 @@ input[type="checkbox"] {
     #spacedRepetitionBoardWrapper,
     #practiceBoardWrapper,
     #learnBoardWrapper {
-        max-width: 100%;
-        width: 100%;
+        max-width: 100% !important;
+        width: 100% !important;
     }
     
     .board-container {
-        padding: 10px;
+        padding: 8px;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 }
 

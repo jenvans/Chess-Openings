@@ -35,8 +35,12 @@
                             <div id="spacedRepetitionBoard"></div>
                         </div>
                         
+                        <div id="spacedRepetitionStatus" class="status-message"></div>
+                        
                         <div class="board-controls">
                             <button id="spacedRepetitionFlipBtn" class="btn btn-secondary">Flip Board</button>
+                            <button id="hintSpacedRepetitionBtn" class="btn btn-secondary" style="display:none;" aria-label="Show hint for current move">Hint</button>
+                            <button id="nextSpacedRepetitionBtn" class="btn btn-primary" style="display:none;" aria-label="Load next opening">Next Opening</button>
                         </div>
                     </div>
                     
@@ -50,22 +54,20 @@
                     <div class="control-group">
                         <h2 id="spacedRepetitionOpeningName">Ready to Practice</h2>
                         
+                        <div id="spacedRepetitionInfo"></div>
+                        
                         <div class="input-group">
                             <label>
                                 <input type="checkbox" id="clickToMoveSpacedRepetition" class="click-to-move-toggle">
-                                Click-to-move
+                                <span class="click-text">Click-to-move</span><span class="tap-text">Tap-to-move</span>
                             </label>
                         </div>
-                        <div id="spacedRepetitionInfo"></div>
                         <div id="spacedRepetitionProgress" class="progress-indicator"></div>
                         <div id="spacedRepetitionMoveList"></div>
                         <div class="button-group">
                             <button id="startSpacedRepetitionBtn" class="btn btn-primary" aria-label="Start spaced repetition practice">Start Practice</button>
-                            <button id="hintSpacedRepetitionBtn" class="btn btn-secondary" style="display:none;" aria-label="Show hint for current move">Hint</button>
-                            <button id="nextSpacedRepetitionBtn" class="btn btn-primary" style="display:none;" aria-label="Load next opening">Next Opening</button>
                             <button id="resetProgressBtn" class="btn btn-secondary reset-progress-btn" aria-label="Reset all review progress">Reset Progress</button>
                         </div>
-                        <div id="spacedRepetitionStatus" class="status-message"></div>
                     </div>
                 </div>
             </div>
@@ -80,9 +82,28 @@
                             <div id="practiceBoard"></div>
                         </div>
                         
+                        <div id="practiceStatus" class="status-message"></div>
+                        
                         <div class="board-controls">
                             <button id="practiceFlipBtn" class="btn btn-secondary">Flip Board</button>
+                            <button id="hintPracticeBtn" class="btn btn-secondary" style="display:none;">Hint</button>
+                            <button id="nextPracticeBtn" class="btn btn-primary" style="display:none;">Next Opening</button>
                         </div>
+                    </div>
+                    
+                    <div class="control-group" id="practiceSessionInfo" style="display:none;">
+                        <h2 id="practiceOpeningName"></h2>
+                        
+                        <div id="practiceInfo"></div>
+                        
+                        <div class="input-group">
+                            <label>
+                                <input type="checkbox" id="clickToMovePractice" class="click-to-move-toggle" checked>
+                                <span class="click-text">Click-to-move</span><span class="tap-text">Tap-to-move</span>
+                            </label>
+                        </div>
+                        <div id="practiceProgress" class="progress-indicator"></div>
+                        <div id="practiceMoveList"></div>
                     </div>
                     
                 </div>
@@ -118,25 +139,6 @@
                                 <button id="practiceByFirstMove" class="btn btn-secondary">Go</button>
                             </div>
                         </div>
-                        
-                        <div id="practiceSessionInfo" style="display:none;">
-                            <h2 id="practiceOpeningName"></h2>
-                            <div class="input-group">
-                                <label>
-                                    <input type="checkbox" id="clickToMovePractice" class="click-to-move-toggle" checked>
-                                    Click-to-move
-                                </label>
-                            </div>
-                            <div id="practiceInfo"></div>
-                            <div id="practiceProgress" class="progress-indicator"></div>
-                            <div id="practiceMoveList"></div>
-                            <div class="button-group">
-                                <button id="hintPracticeBtn" class="btn btn-secondary" style="display:none;">Hint</button>
-                                <button id="nextPracticeBtn" class="btn btn-primary" style="display:none;">Next Opening</button>
-                            </div>
-                        </div>
-                        
-                        <div id="practiceStatus" class="status-message"></div>
                     </div>
                 </div>
             </div>

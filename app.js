@@ -116,6 +116,9 @@ function initBoard() {
     // Load saved theme
     const savedTheme = localStorage.getItem('boardTheme') || 'blue';
     setTheme(savedTheme);
+    
+    // Resize board after initialization
+    setTimeout(() => board.resize(), 100);
 }
 
 // Prevent picking up pieces if game is over or wrong color
@@ -1136,6 +1139,9 @@ function switchView(viewName) {
     if (viewName === 'spacedRepetition') {
         updateSpacedRepetitionQueue();
     }
+    
+    // Resize boards after view switch
+    setTimeout(() => resizeBoards(), 100);
 }
 
 // Initialize spaced repetition board
@@ -1156,6 +1162,9 @@ function initSpacedRepetitionBoard() {
         if (!document.getElementById('clickToMoveSpacedRepetition').checked) return;
         handleSpacedRepetitionSquareClick($(this).attr('data-square'));
     });
+    
+    // Resize board after initialization
+    setTimeout(() => spacedRepetitionBoard.resize(), 100);
 }
 
 // Initialize practice board (filtered mode)
@@ -1181,6 +1190,9 @@ function initLearnBoard() {
         if (!document.getElementById('clickToMoveLearn').checked) return;
         handleLearnSquareClick($(this).attr('data-square'));
     });
+    
+    // Resize board after initialization
+    setTimeout(() => learnBoard.resize(), 100);
 }
 
 // Spaced repetition algorithm - calculate next review date
@@ -1389,6 +1401,12 @@ function onSpacedRepetitionDrop(source, target) {
         playSuccessSound();
         currentMoveIndex++;
         
+        // Clear hint
+        document.getElementById('spacedRepetitionInfo').innerHTML = `
+            <p><strong>Playing as:</strong> ${currentSpacedRepetitionOpening.playingAs || 'white'}</p>
+            <p><strong>Your turn!</strong> Make your ${currentMoveIndex > 0 ? 'next' : 'first'} move.</p>
+        `;
+        
         // Update move list
         updateSpacedRepetitionMoveList();
         
@@ -1580,11 +1598,10 @@ function showSpacedRepetitionHint() {
     else if (expectedMove.startsWith('K')) pieceType = 'King';
     else if (expectedMove.startsWith('O')) pieceType = 'King';
     
-    const moveListEl = document.getElementById('spacedRepetitionMoveList');
-    moveListEl.innerHTML = `
-        <h3>Hint:</h3>
-        <div style="background: var(--bg-secondary, #f8f9fa); padding: 15px; border-radius: 6px; border-left: 4px solid #ffc107; color: var(--text-primary, #000);">
-            Move a <strong>${pieceType}</strong>
+    const infoEl = document.getElementById('spacedRepetitionInfo');
+    infoEl.innerHTML = `
+        <div style="background: var(--bg-secondary, #f8f9fa); padding: 15px; border-radius: 6px; border-left: 4px solid #ffc107; color: var(--text-primary, #000); margin-bottom: 15px;">
+            <strong>💡 Hint:</strong> Move a <strong>${pieceType}</strong>
         </div>
     `;
 }
@@ -1604,11 +1621,10 @@ function showFilteredPracticeHint() {
     else if (expectedMove.startsWith('K')) pieceType = 'King';
     else if (expectedMove.startsWith('O')) pieceType = 'King';
     
-    const moveListEl = document.getElementById('practiceMoveList');
-    moveListEl.innerHTML = `
-        <h3>Hint:</h3>
-        <div style="background: var(--bg-secondary, #f8f9fa); padding: 15px; border-radius: 6px; border-left: 4px solid #ffc107; color: var(--text-primary, #000);">
-            Move a <strong>${pieceType}</strong>
+    const infoEl = document.getElementById('practiceInfo');
+    infoEl.innerHTML = `
+        <div style="background: var(--bg-secondary, #f8f9fa); padding: 15px; border-radius: 6px; border-left: 4px solid #ffc107; color: var(--text-primary, #000); margin-bottom: 15px;">
+            <strong>💡 Hint:</strong> Move a <strong>${pieceType}</strong>
         </div>
     `;
 }
@@ -2161,6 +2177,9 @@ function initFilteredPracticeBoard() {
         if (!document.getElementById('clickToMovePractice').checked) return;
         handleFilteredPracticeSquareClick($(this).attr('data-square'));
     });
+    
+    // Resize board after initialization
+    setTimeout(() => filteredPracticeBoard.resize(), 100);
 }
 
 // Populate filters for practice page
@@ -2349,6 +2368,12 @@ function onFilteredPracticeDrop(source, target) {
     if (move.san === expectedMove) {
         playSuccessSound();
         currentMoveIndex++;
+        
+        // Clear hint
+        document.getElementById('practiceInfo').innerHTML = `
+            <p><strong>Playing as:</strong> ${currentFilteredPracticeOpening.playingAs || 'white'}</p>
+            <p><strong>Your turn!</strong> Make your ${currentMoveIndex > 0 ? 'next' : 'first'} move.</p>
+        `;
         
         // Update move list
         updateFilteredPracticeMoveList();
@@ -2557,3 +2582,47 @@ N - Next opening (when available)
 Note: Shortcuts work when not typing in input fields.`);
     }
 }
+
+// Resize boards responsively
+function resizeBoards() {
+    const boards = [
+        { board: board, element: 'board' },
+        { board: spacedRepetitionBoard, element: 'spacedRepetitionBoard' },
+        { board: filteredPracticeBoard, element: 'practiceBoard' },
+        { board: learnBoard, element: 'learnBoard' }
+    ];
+    
+    boards.forEach(({ board: boardInstance, element }) => {
+        if (boardInstance) {
+            try {
+                // Resize the board
+                boardInstance.resize();
+            } catch (e) {
+                console.log('Board resize error:', e);
+            }
+        }
+    });
+}
+
+// Debounce function to prevent excessive resize calls
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Add window resize listener
+window.addEventListener('resize', debounce(resizeBoards, 250));
+
+// Call resize on page load
+window.addEventListener('load', () => {
+    resizeBoards();
+    // Resize again after a short delay to ensure everything is loaded
+    setTimeout(resizeBoards, 100);
+});
